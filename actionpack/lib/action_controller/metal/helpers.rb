@@ -95,7 +95,11 @@ module ActionController
 
       def all_helpers_from_path(path)
         helpers = Array(path).flat_map do |_path|
-          Dir["#{_path}/**/*_helper.rb"].map! { |file| File.basename(file, "_helper.rb") }.sort!
+          Dir["#{_path}/**/*_helper.rb"].map! { |file|
+            sub_folder = file.gsub(_path.to_s, "").gsub(File.basename(file),"").gsub(/^\//,"")
+            module_name = File.basename(file, '_helper.rb')
+            "#{sub_folder}#{module_name}"
+            }.sort!
         end
         helpers.uniq!
         helpers
